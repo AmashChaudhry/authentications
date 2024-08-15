@@ -16,7 +16,7 @@ class _AccountUsernameState extends State<AccountUsername> {
   RxBool isLoading = false.obs;
   RxBool emailAlreadyExists = false.obs;
   RxBool isButtonDisabled = true.obs;
-  RxString statusMessage = ''.obs;
+  RxString statusMessage = 'Your friends can add you using your username.'.obs;
 
   TextEditingController usernameController = TextEditingController();
 
@@ -152,7 +152,10 @@ class _AccountUsernameState extends State<AccountUsername> {
                       ),
                       onChanged: (value) async {
                         isLoading.value = true;
-                        if (value.length < 5) {
+                        if (value.isEmpty) {
+                          isButtonDisabled.value = true;
+                          statusMessage.value = 'Your friends can add you using your username.';
+                        } else if (value.length < 5) {
                           isButtonDisabled.value = true;
                           statusMessage.value = 'Username must be 5 characters long';
                         } else if (value.length > 4) {
@@ -196,7 +199,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                                 color: Colors.green,
                                 size: 15,
                               )
-                            else
+                            else if (usernameController.text.isNotEmpty)
                               const Icon(
                                 Icons.error,
                                 color: Colors.red,
