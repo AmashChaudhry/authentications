@@ -104,7 +104,7 @@ class _AccountNameState extends State<AccountName> {
                       decoration: InputDecoration(
                         filled: true,
                         isCollapsed: true,
-                        hintText: 'Full Name',
+                        hintText: 'Enter Name',
                         labelText: 'Full Name',
                         fillColor: componentBackgroundColor,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
@@ -124,8 +124,8 @@ class _AccountNameState extends State<AccountName> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: accentColor,
+                          borderSide: BorderSide(
+                            color: accentColor.withOpacity(0.5),
                             width: 2,
                           ),
                         ),

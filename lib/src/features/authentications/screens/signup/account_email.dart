@@ -107,7 +107,7 @@ class _AccountEmailState extends State<AccountEmail> {
                       decoration: InputDecoration(
                         filled: true,
                         isCollapsed: true,
-                        hintText: 'E-mail',
+                        hintText: 'Enter E-mail',
                         labelText: 'E-mail',
                         fillColor: componentBackgroundColor,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
@@ -127,8 +127,8 @@ class _AccountEmailState extends State<AccountEmail> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: accentColor,
+                          borderSide: BorderSide(
+                            color: accentColor.withOpacity(0.5),
                             width: 2,
                           ),
                         ),
@@ -154,6 +154,18 @@ class _AccountEmailState extends State<AccountEmail> {
                           isButtonDisabled.value = true;
                         }
                       },
+                    ),
+                    const SizedBox(height: 5),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'The email has already been linked by another account. Please enter another email.',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ),
                   ],
                 ),
