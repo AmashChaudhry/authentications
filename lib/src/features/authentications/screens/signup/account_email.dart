@@ -1,4 +1,5 @@
 import 'package:authentications/src/constants/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'account_password.dart';
@@ -13,6 +14,8 @@ class AccountEmail extends StatefulWidget {
 }
 
 class _AccountEmailState extends State<AccountEmail> {
+  RxBool isLoading = false.obs;
+  RxBool emailAlreadyExists = false.obs;
   RxBool isButtonDisabled = true.obs;
 
   TextEditingController emailController = TextEditingController();
@@ -153,18 +156,36 @@ class _AccountEmailState extends State<AccountEmail> {
                         } else {
                           isButtonDisabled.value = true;
                         }
+                        emailAlreadyExists.value = false;
                       },
                     ),
                     const SizedBox(height: 5),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        'The email has already been linked by another account. Please enter another email.',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Obx(
+                        () => emailAlreadyExists.value
+                            ? const Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                    size: 15,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(
+                                      'This email already linked with another account. Please try with another email address.',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(),
                       ),
                     ),
                   ],
@@ -194,25 +215,66 @@ class _AccountEmailState extends State<AccountEmail> {
                             ),
                           ),
                         )
-                      : ElevatedButton(
-                          onPressed: () {
-                            Get.to(() => AccountPassword(email: emailController.text, name: widget.name));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                      : isLoading.value
+                          ? Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: accentColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 15,
+                                      height: 15,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 1.5,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Loading...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : ElevatedButton(
+                              onPressed: () async {
+                                isLoading.value = true;
+                                await FirebaseFirestore.instance.collection('Users').where('Email', isEqualTo: emailController.text).get().then((userSnapshot) {
+                                  if (userSnapshot.docs.isNotEmpty) {
+                                    emailAlreadyExists.value = true;
+                                  } else {
+                                    emailAlreadyExists.value = false;
+                                    Get.to(() => AccountPassword(email: emailController.text, name: widget.name));
+                                  }
+                                });
+                                isLoading.value = false;
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: accentColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                'Continue',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            'Continue',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
                 ),
               ),
             ),
