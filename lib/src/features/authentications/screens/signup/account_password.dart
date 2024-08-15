@@ -95,7 +95,7 @@ class _AccountPasswordState extends State<AccountPassword> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Create Password',
+                      'Create password',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 24,

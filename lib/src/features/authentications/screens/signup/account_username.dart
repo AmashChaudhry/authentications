@@ -1,20 +1,24 @@
 import 'package:authentications/src/constants/colors.dart';
-import 'package:authentications/src/features/authentications/screens/signup/account_username.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'account_email.dart';
 
-class AccountName extends StatefulWidget {
-  const AccountName({super.key});
+class AccountUsername extends StatefulWidget {
+  const AccountUsername({super.key, required this.fullName});
+
+  final String fullName;
 
   @override
-  State<AccountName> createState() => _AccountNameState();
+  State<AccountUsername> createState() => _AccountUsernameState();
 }
 
-class _AccountNameState extends State<AccountName> {
+class _AccountUsernameState extends State<AccountUsername> {
+  RxBool isLoading = false.obs;
+  RxBool emailAlreadyExists = false.obs;
   RxBool isButtonDisabled = true.obs;
+  RxString statusMessage = ''.obs;
 
-  TextEditingController fullNameController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,7 @@ class _AccountNameState extends State<AccountName> {
       child: Scaffold(
         backgroundColor: pageBackgroundColor,
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               height: 50,
@@ -68,7 +73,7 @@ class _AccountNameState extends State<AccountName> {
                           ),
                         ),
                         Text(
-                          'Step 1 of 4',
+                          'Step 2 of 4',
                           style: TextStyle(
                             color: Colors.black.withOpacity(0.5),
                             fontSize: 12,
@@ -88,7 +93,7 @@ class _AccountNameState extends State<AccountName> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'What\'s your name?',
+                      'Choose username',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 24,
@@ -97,7 +102,7 @@ class _AccountNameState extends State<AccountName> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: fullNameController,
+                      controller: usernameController,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -105,15 +110,15 @@ class _AccountNameState extends State<AccountName> {
                       decoration: InputDecoration(
                         filled: true,
                         isCollapsed: true,
-                        hintText: 'Enter Name',
-                        labelText: 'Full Name',
+                        hintText: 'Enter Username',
+                        labelText: 'Username',
                         fillColor: componentBackgroundColor,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
                         hintStyle: TextStyle(
                           color: Colors.black.withOpacity(0.2),
                         ),
                         prefixIcon: Icon(
-                          Icons.abc,
+                          Icons.alternate_email_rounded,
                           color: Colors.black.withOpacity(0.4),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -145,13 +150,72 @@ class _AccountNameState extends State<AccountName> {
                           ),
                         ),
                       ),
-                      onChanged: (value) {
-                        if (value.length > 4) {
-                          isButtonDisabled.value = false;
-                        } else {
+                      onChanged: (value) async {
+                        isLoading.value = true;
+                        if (value.length < 5) {
                           isButtonDisabled.value = true;
+                          statusMessage.value = 'Username must be 5 characters long';
+                        } else if (value.length > 4) {
+                          isButtonDisabled.value = true;
+                          statusMessage.value = 'Checking username...';
+                          await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) {
+                            if (userSnapshot.docs.isNotEmpty) {
+                              isButtonDisabled.value = true;
+                              statusMessage.value = 'Username $value is already taken';
+                            } else {
+                              isButtonDisabled.value = false;
+                              statusMessage.value = 'Username $value is available';
+                            }
+                          });
                         }
+                        isLoading.value = false;
                       },
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Obx(
+                        () => Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (isLoading.value)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 2, right: 3),
+                                child: SizedBox(
+                                  height: 10,
+                                  width: 10,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black.withOpacity(0.6),
+                                    strokeWidth: 1.5,
+                                  ),
+                                ),
+                              )
+                            else if (!isButtonDisabled.value)
+                              const Icon(
+                                Icons.check_circle_rounded,
+                                color: Colors.green,
+                                size: 15,
+                              )
+                            else
+                              const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 15,
+                              ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                statusMessage.value,
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.8),
+                                  fontSize: 12,
+                                  // fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -181,8 +245,18 @@ class _AccountNameState extends State<AccountName> {
                           ),
                         )
                       : ElevatedButton(
-                          onPressed: () {
-                            Get.to(() => AccountUsername(fullName: fullNameController.text));
+                          onPressed: () async {
+                            isLoading.value = true;
+                            await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: usernameController.text).get().then((userSnapshot) {
+                              if (userSnapshot.docs.isNotEmpty) {
+                                emailAlreadyExists.value = true;
+                                isButtonDisabled.value = true;
+                              } else {
+                                emailAlreadyExists.value = false;
+                                // Get.to(() => AccountPassword(email: emailController.text, name: widget.name));
+                              }
+                            });
+                            isLoading.value = false;
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor,
