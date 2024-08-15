@@ -5,10 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AccountPassword extends StatefulWidget {
-  const AccountPassword({super.key, required this.email, required this.name});
+  const AccountPassword({
+    super.key,
+    required this.email,
+    required this.fullName,
+    required this.username,
+  });
 
+  final String fullName;
+  final String username;
   final String email;
-  final String name;
 
   @override
   State<AccountPassword> createState() => _AccountPasswordState();
@@ -262,14 +268,17 @@ class _AccountPasswordState extends State<AccountPassword> {
                               onPressed: () async {
                                 isLoading.value = true;
                                 final userData = {
-                                  'Full Name': widget.name,
+                                  'Full Name': widget.fullName,
+                                  'Username': widget.username,
                                   'Email': widget.email,
                                   'Password': passwordController.text,
                                 };
-                                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                await FirebaseAuth.instance
+                                    .createUserWithEmailAndPassword(
                                   email: widget.email,
                                   password: passwordController.text,
-                                ).then((authentication) async {
+                                )
+                                    .then((authentication) async {
                                   await userCollection.doc(authentication.user?.uid).set(userData);
                                 });
                                 FirebaseAuth.instance.idTokenChanges().listen((User? user) {

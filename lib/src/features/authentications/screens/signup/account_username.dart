@@ -1,4 +1,5 @@
 import 'package:authentications/src/constants/colors.dart';
+import 'package:authentications/src/features/authentications/screens/signup/account_email.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,6 @@ class AccountUsername extends StatefulWidget {
 
 class _AccountUsernameState extends State<AccountUsername> {
   RxBool isLoading = false.obs;
-  RxBool emailAlreadyExists = false.obs;
   RxBool isButtonDisabled = true.obs;
   RxString statusMessage = 'Your friends can add you using your username.'.obs;
 
@@ -252,11 +252,9 @@ class _AccountUsernameState extends State<AccountUsername> {
                             isLoading.value = true;
                             await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: usernameController.text).get().then((userSnapshot) {
                               if (userSnapshot.docs.isNotEmpty) {
-                                emailAlreadyExists.value = true;
                                 isButtonDisabled.value = true;
                               } else {
-                                emailAlreadyExists.value = false;
-                                // Get.to(() => AccountPassword(email: emailController.text, name: widget.name));
+                                Get.to(() => AccountEmail(fullName: widget.fullName, username: usernameController.text));
                               }
                             });
                             isLoading.value = false;
