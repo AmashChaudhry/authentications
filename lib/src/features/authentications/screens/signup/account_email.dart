@@ -253,6 +253,7 @@ class _AccountEmailState extends State<AccountEmail> {
                                 await FirebaseFirestore.instance.collection('Users').where('Email', isEqualTo: emailController.text).get().then((userSnapshot) {
                                   if (userSnapshot.docs.isNotEmpty) {
                                     emailAlreadyExists.value = true;
+                                    isButtonDisabled.value = true;
                                   } else {
                                     emailAlreadyExists.value = false;
                                     Get.to(() => AccountPassword(email: emailController.text, name: widget.name));
