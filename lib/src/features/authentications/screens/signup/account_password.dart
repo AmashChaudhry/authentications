@@ -105,6 +105,7 @@ class _AccountPasswordState extends State<AccountPassword> {
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: passwordController,
+                      obscureText: true,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -177,6 +178,7 @@ class _AccountPasswordState extends State<AccountPassword> {
                       child: Obx(
                         () => isButtonDisabled.value && !isValueEmpty.value
                             ? const Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(
                                     Icons.error,
@@ -267,9 +269,9 @@ class _AccountPasswordState extends State<AccountPassword> {
                                 await FirebaseAuth.instance.createUserWithEmailAndPassword(
                                   email: widget.email,
                                   password: passwordController.text,
-                                );
-                                User? user = FirebaseAuth.instance.currentUser;
-                                await userCollection.doc(user?.uid).set(userData);
+                                ).then((authentication) async {
+                                  await userCollection.doc(authentication.user?.uid).set(userData);
+                                });
                                 FirebaseAuth.instance.idTokenChanges().listen((User? user) {
                                   if (user == null) {
                                     // Get.offAll(() => const LoginScreen());
