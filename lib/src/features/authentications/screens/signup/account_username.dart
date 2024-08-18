@@ -28,7 +28,7 @@ class _AccountUsernameState extends State<AccountUsername> {
       if (value.trim().isEmpty) {
         isButtonDisabled.value = true;
         statusMessage.value = 'Your friends can add you using your username.';
-      } else if (value.trim().length < 8) {
+      } else if (value.trim().length < 5) {
         isButtonDisabled.value = true;
         statusMessage.value = 'Username not available';
       } else if (userSnapshot.docs.isNotEmpty) {
