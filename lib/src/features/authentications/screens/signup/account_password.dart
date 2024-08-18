@@ -171,7 +171,7 @@ class _AccountPasswordState extends State<AccountPassword> {
                           isButtonDisabled.value = true;
                         } else if (!RegExp(r'\d').hasMatch(value)) {
                           isButtonDisabled.value = true;
-                        } else if (!RegExp(r'[!@#\$&*~]').hasMatch(value)) {
+                        } else if (!RegExp(r'[!@#$&*~]').hasMatch(value)) {
                           isButtonDisabled.value = true;
                         } else {
                           isButtonDisabled.value = false;

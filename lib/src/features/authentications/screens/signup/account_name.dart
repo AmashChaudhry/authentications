@@ -2,7 +2,6 @@ import 'package:authentications/src/constants/colors.dart';
 import 'package:authentications/src/features/authentications/screens/signup/account_username.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'account_email.dart';
 
 class AccountName extends StatefulWidget {
   const AccountName({super.key});

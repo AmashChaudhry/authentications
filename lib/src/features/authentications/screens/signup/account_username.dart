@@ -152,25 +152,23 @@ class _AccountUsernameState extends State<AccountUsername> {
                       ),
                       onChanged: (value) async {
                         isLoading.value = true;
-                        if (value.isEmpty) {
-                          isButtonDisabled.value = true;
-                          statusMessage.value = 'Your friends can add you using your username.';
-                        } else if (value.length < 5) {
-                          isButtonDisabled.value = true;
-                          statusMessage.value = 'Username must be 5 characters long';
-                        } else if (value.length > 4) {
-                          isButtonDisabled.value = true;
-                          statusMessage.value = 'Checking username...';
-                          await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) {
-                            if (userSnapshot.docs.isNotEmpty) {
-                              isButtonDisabled.value = true;
-                              statusMessage.value = 'Username $value is already taken';
-                            } else {
-                              isButtonDisabled.value = false;
-                              statusMessage.value = 'Username $value is available';
-                            }
-                          });
-                        }
+                        isButtonDisabled.value = true;
+                        statusMessage.value = 'Checking username...';
+                        await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) {
+                          if (value.isEmpty) {
+                            isButtonDisabled.value = true;
+                            statusMessage.value = 'Your friends can add you using your username.';
+                          } else if (value.length < 5) {
+                            isButtonDisabled.value = true;
+                            statusMessage.value = 'Username must be 5 characters long';
+                          } else if (userSnapshot.docs.isNotEmpty) {
+                            isButtonDisabled.value = true;
+                            statusMessage.value = 'Username $value is already taken';
+                          } else {
+                            isButtonDisabled.value = false;
+                            statusMessage.value = 'Username $value is available';
+                          }
+                        });
                         isLoading.value = false;
                       },
                     ),
