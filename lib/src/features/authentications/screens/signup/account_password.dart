@@ -271,7 +271,7 @@ class _AccountPasswordState extends State<AccountPassword> {
                                   'Full Name': widget.fullName,
                                   'Username': widget.username,
                                   'Email': widget.email,
-                                  'Password': passwordController.text,
+                                  'Password': passwordController.text.trim(),
                                 };
                                 await FirebaseAuth.instance
                                     .createUserWithEmailAndPassword(

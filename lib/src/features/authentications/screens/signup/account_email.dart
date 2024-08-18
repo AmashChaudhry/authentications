@@ -251,13 +251,13 @@ class _AccountEmailState extends State<AccountEmail> {
                           : ElevatedButton(
                               onPressed: () async {
                                 isLoading.value = true;
-                                await FirebaseFirestore.instance.collection('Users').where('Email', isEqualTo: emailController.text).get().then((userSnapshot) {
+                                await FirebaseFirestore.instance.collection('Users').where('Email', isEqualTo: emailController.text.trim()).get().then((userSnapshot) {
                                   if (userSnapshot.docs.isNotEmpty) {
                                     emailAlreadyExists.value = true;
                                     isButtonDisabled.value = true;
                                   } else {
                                     emailAlreadyExists.value = false;
-                                    Get.to(() => AccountPassword(email: emailController.text, fullName: widget.fullName, username: widget.username));
+                                    Get.to(() => AccountPassword(email: emailController.text.trim(), fullName: widget.fullName, username: widget.username));
                                   }
                                 });
                                 isLoading.value = false;

@@ -20,6 +20,25 @@ class _AccountUsernameState extends State<AccountUsername> {
 
   TextEditingController usernameController = TextEditingController();
 
+  Future<void> usernameChecker(value) async {
+    isButtonDisabled.value = true;
+    await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) async {
+      if (value.isEmpty) {
+        isButtonDisabled.value = true;
+        statusMessage.value = 'Your friends can add you using your username.';
+      } else if (value.length < 5) {
+        isButtonDisabled.value = true;
+        statusMessage.value = 'Username must be 5 characters long';
+      } else if (userSnapshot.docs.isNotEmpty) {
+        isButtonDisabled.value = true;
+        statusMessage.value = 'Username $value is already taken';
+      } else {
+        isButtonDisabled.value = false;
+        statusMessage.value = 'Username $value is available';
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -152,22 +171,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                       ),
                       onChanged: (value) async {
                         isLoading.value = true;
-                        isButtonDisabled.value = true;
-                        await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) {
-                          if (value.isEmpty) {
-                            isButtonDisabled.value = true;
-                            statusMessage.value = 'Your friends can add you using your username.';
-                          } else if (value.length < 5) {
-                            isButtonDisabled.value = true;
-                            statusMessage.value = 'Username must be 5 characters long';
-                          } else if (userSnapshot.docs.isNotEmpty) {
-                            isButtonDisabled.value = true;
-                            statusMessage.value = 'Username $value is already taken';
-                          } else {
-                            isButtonDisabled.value = false;
-                            statusMessage.value = 'Username $value is available';
-                          }
-                        });
+                        await usernameChecker(usernameController.text.trim());
                         isLoading.value = false;
                       },
                     ),
@@ -196,7 +200,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                                 color: Colors.green,
                                 size: 15,
                               )
-                            else if (usernameController.text.isNotEmpty)
+                            else if (usernameController.text.trim().isNotEmpty)
                               const Icon(
                                 Icons.error,
                                 color: Colors.red,

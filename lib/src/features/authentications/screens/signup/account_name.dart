@@ -181,7 +181,7 @@ class _AccountNameState extends State<AccountName> {
                         )
                       : ElevatedButton(
                           onPressed: () {
-                            Get.to(() => AccountUsername(fullName: fullNameController.text));
+                            Get.to(() => AccountUsername(fullName: fullNameController.text.trim()));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor,
