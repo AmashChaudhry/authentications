@@ -2,6 +2,7 @@ import 'package:authentications/src/constants/colors.dart';
 import 'package:authentications/src/features/authentications/screens/signup/account_email.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class AccountUsername extends StatefulWidget {
@@ -20,16 +21,16 @@ class _AccountUsernameState extends State<AccountUsername> {
 
   TextEditingController usernameController = TextEditingController();
 
-  Future<void> usernameChecker(value) async {
+  Future<void> checkUsernameAvailability(String value) async {
     isLoading.value = true;
     isButtonDisabled.value = true;
-    await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) async {
-      if (value.isEmpty) {
+    await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value.trim()).get().then((userSnapshot) async {
+      if (value.trim().isEmpty) {
         isButtonDisabled.value = true;
         statusMessage.value = 'Your friends can add you using your username.';
-      } else if (value.length < 5) {
+      } else if (value.trim().length < 8) {
         isButtonDisabled.value = true;
-        statusMessage.value = 'Username must be 5 characters long';
+        statusMessage.value = 'Username not available';
       } else if (userSnapshot.docs.isNotEmpty) {
         isButtonDisabled.value = true;
         statusMessage.value = 'Username $value is already taken';
@@ -171,7 +172,10 @@ class _AccountUsernameState extends State<AccountUsername> {
                           ),
                         ),
                       ),
-                      onChanged: (value) => usernameChecker(usernameController.text.trim()),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9._-]')),
+                      ],
+                      onChanged: (value) => checkUsernameAvailability(value),
                     ),
                     const SizedBox(height: 5),
                     Padding(
