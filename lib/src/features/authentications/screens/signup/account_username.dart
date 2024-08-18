@@ -21,6 +21,7 @@ class _AccountUsernameState extends State<AccountUsername> {
   TextEditingController usernameController = TextEditingController();
 
   Future<void> usernameChecker(value) async {
+    isLoading.value = true;
     isButtonDisabled.value = true;
     await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) async {
       if (value.isEmpty) {
@@ -37,6 +38,7 @@ class _AccountUsernameState extends State<AccountUsername> {
         statusMessage.value = 'Username $value is available';
       }
     });
+    isLoading.value = false;
   }
 
   @override
@@ -169,11 +171,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                           ),
                         ),
                       ),
-                      onChanged: (value) async {
-                        isLoading.value = true;
-                        await usernameChecker(usernameController.text.trim());
-                        isLoading.value = false;
-                      },
+                      onChanged: (value) => usernameChecker(usernameController.text.trim()),
                     ),
                     const SizedBox(height: 5),
                     Padding(
