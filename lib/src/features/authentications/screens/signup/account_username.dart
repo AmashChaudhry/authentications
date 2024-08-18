@@ -153,7 +153,6 @@ class _AccountUsernameState extends State<AccountUsername> {
                       onChanged: (value) async {
                         isLoading.value = true;
                         isButtonDisabled.value = true;
-                        statusMessage.value = 'Checking username...';
                         await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) {
                           if (value.isEmpty) {
                             isButtonDisabled.value = true;
@@ -206,7 +205,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                             const SizedBox(width: 5),
                             Expanded(
                               child: Text(
-                                statusMessage.value,
+                                isLoading.value ? 'Checking username...' : statusMessage.value,
                                 style: TextStyle(
                                   color: Colors.black.withOpacity(0.8),
                                   fontSize: 12,
