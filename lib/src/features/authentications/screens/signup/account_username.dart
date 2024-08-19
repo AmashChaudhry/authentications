@@ -193,6 +193,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9._-]')),
                       ],
+                      onChanged: (value) => isButtonDisabled.value = true,
                     ),
                     const SizedBox(height: 5),
                     Padding(
