@@ -17,29 +17,47 @@ class AccountUsername extends StatefulWidget {
 class _AccountUsernameState extends State<AccountUsername> {
   RxBool isLoading = false.obs;
   RxBool isButtonDisabled = true.obs;
-  RxString statusMessage = 'Your friends can add you using your username.'.obs;
+  RxString username = ''.obs;
+  RxString statusMessage = 'Username Empty'.obs;
 
   TextEditingController usernameController = TextEditingController();
+
+  @override
+  void initState() {
+    usernameController.addListener(() {
+      username.value = usernameController.text;
+    });
+    debounce(username, (value) {
+      checkUsernameAvailability(value);
+    }, time: const Duration(milliseconds: 500));
+    super.initState();
+  }
 
   Future<void> checkUsernameAvailability(String value) async {
     isLoading.value = true;
     isButtonDisabled.value = true;
-    await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value.trim()).get().then((userSnapshot) async {
-      if (value.trim().isEmpty) {
+    await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) async {
+      if (value.isEmpty) {
         isButtonDisabled.value = true;
-        statusMessage.value = 'Your friends can add you using your username.';
-      } else if (value.trim().length < 5) {
+        statusMessage.value = 'Username Empty';
+      } else if (value.length < 5) {
         isButtonDisabled.value = true;
-        statusMessage.value = 'Username not available';
+        statusMessage.value = 'Short Length';
       } else if (userSnapshot.docs.isNotEmpty) {
         isButtonDisabled.value = true;
-        statusMessage.value = 'Username $value is already taken';
+        statusMessage.value = 'Already Registered';
       } else {
         isButtonDisabled.value = false;
-        statusMessage.value = 'Username $value is available';
+        statusMessage.value = 'Username Available';
       }
     });
     isLoading.value = false;
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -175,7 +193,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9._-]')),
                       ],
-                      onChanged: (value) => checkUsernameAvailability(value),
+                      // onChanged: (value) => checkUsernameAvailability(value),
                     ),
                     const SizedBox(height: 5),
                     Padding(
@@ -185,40 +203,101 @@ class _AccountUsernameState extends State<AccountUsername> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             if (isLoading.value)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 2, right: 3),
-                                child: SizedBox(
-                                  height: 10,
-                                  width: 10,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.black.withOpacity(0.6),
-                                    strokeWidth: 1.5,
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 2, right: 3),
+                                    child: SizedBox(
+                                      height: 10,
+                                      width: 10,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black.withOpacity(0.6),
+                                        strokeWidth: 1.5,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    'Checking username...',
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.8),
+                                      fontSize: 12,
+                                      // fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
                               )
-                            else if (!isButtonDisabled.value)
-                              const Icon(
-                                Icons.check_circle_rounded,
-                                color: Colors.green,
-                                size: 15,
+                            else if (statusMessage.value == 'Username Empty')
+                              Row(
+                                children: [
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    'Your friends can add you using your username.',
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.8),
+                                      fontSize: 12,
+                                      // fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
                               )
-                            else if (usernameController.text.trim().isNotEmpty)
-                              const Icon(
-                                Icons.error,
-                                color: Colors.red,
-                                size: 15,
+                            else if (statusMessage.value == 'Short Length')
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.error_rounded,
+                                    color: Colors.red,
+                                    size: 15,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    'Username must be at least 5 characters long',
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.8),
+                                      fontSize: 12,
+                                      // fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            else if (statusMessage.value == 'Already Registered')
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.error_rounded,
+                                    color: Colors.red,
+                                    size: 15,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    'Username ${usernameController.text} is already taken',
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.8),
+                                      fontSize: 12,
+                                      // fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            else if (statusMessage.value == 'Username Available')
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.check_circle_rounded,
+                                    color: Colors.green,
+                                    size: 15,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    'Username ${usernameController.text} is available',
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.8),
+                                      fontSize: 12,
+                                      // fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                isLoading.value ? 'Checking username...' : statusMessage.value,
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.8),
-                                  fontSize: 12,
-                                  // fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
