@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ElevatedButton(
           onPressed: () async {
             await FirebaseAuth.instance.signOut();
-            Get.to(() => const LoginScreen());
+            Get.offAll(() => const LoginScreen());
           },
           child: const Text('Sign Out'),
         ),
