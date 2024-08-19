@@ -193,7 +193,6 @@ class _AccountUsernameState extends State<AccountUsername> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9._-]')),
                       ],
-                      // onChanged: (value) => checkUsernameAvailability(value),
                     ),
                     const SizedBox(height: 5),
                     Padding(
@@ -330,16 +329,8 @@ class _AccountUsernameState extends State<AccountUsername> {
                           ),
                         )
                       : ElevatedButton(
-                          onPressed: () async {
-                            isLoading.value = true;
-                            await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: usernameController.text).get().then((userSnapshot) {
-                              if (userSnapshot.docs.isNotEmpty) {
-                                isButtonDisabled.value = true;
-                              } else {
-                                Get.to(() => AccountEmail(fullName: widget.fullName, username: usernameController.text));
-                              }
-                            });
-                            isLoading.value = false;
+                          onPressed: () {
+                            Get.to(() => AccountEmail(fullName: widget.fullName, username: usernameController.text));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor,
