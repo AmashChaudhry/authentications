@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   RxBool isLoading = false.obs;
+  RxBool obscureText = true.obs;
   RxBool isButtonDisabled = true.obs;
 
   TextEditingController emailController = TextEditingController();
@@ -208,63 +209,76 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 15),
-                    TextFormField(
-                      controller: passwordController,
-                      obscureText: true,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
+                    Obx(
+                      () => TextFormField(
+                        controller: passwordController,
+                        obscureText: obscureText.value,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          isCollapsed: true,
+                          hintText: 'Enter Password',
+                          labelText: 'Password',
+                          fillColor: componentBackgroundColor,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+                          hintStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.2),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.fingerprint_rounded,
+                            color: Colors.black.withOpacity(0.4),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: accentColor.withOpacity(0.5),
+                              width: 2,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          suffix: GestureDetector(
+                            onTap: () {
+                              obscureText.value = !obscureText.value;
+                            },
+                            child: Text(
+                              obscureText.value ? 'View' : 'Hide',
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(0.4),
+                              ),
+                            ),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (value.length > 7 && emailController.text.trim().length > 4) {
+                            isButtonDisabled.value = false;
+                          } else {
+                            isButtonDisabled.value = true;
+                          }
+                        },
                       ),
-                      decoration: InputDecoration(
-                        filled: true,
-                        isCollapsed: true,
-                        hintText: 'Enter Password',
-                        labelText: 'Password',
-                        fillColor: componentBackgroundColor,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
-                        hintStyle: TextStyle(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.fingerprint_rounded,
-                          color: Colors.black.withOpacity(0.4),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: accentColor.withOpacity(0.5),
-                            width: 2,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: Colors.red,
-                            width: 2,
-                          ),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: Colors.red,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        if (value.length > 7 && emailController.text.trim().length > 4) {
-                          isButtonDisabled.value = false;
-                        } else {
-                          isButtonDisabled.value = true;
-                        }
-                      },
                     ),
                   ],
                 ),
