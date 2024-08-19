@@ -1,4 +1,6 @@
 import 'package:authentications/src/constants/colors.dart';
+import 'package:authentications/src/features/authentications/screens/authentication_home/authentication_home_screen.dart';
+import 'package:authentications/src/features/core/screens/home/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -282,10 +284,10 @@ class _AccountPasswordState extends State<AccountPassword> {
                                   await userCollection.doc(authentication.user?.uid).set(userData);
                                 });
                                 FirebaseAuth.instance.idTokenChanges().listen((User? user) {
-                                  if (user == null) {
-                                    // Get.offAll(() => const LoginScreen());
+                                  if (user != null) {
+                                    Get.offAll(() => const HomeScreen());
                                   } else {
-                                    // Get.offAll(() => const VerifyEmailAddress());
+                                    Get.offAll(() => const AuthenticationHomeScreen());
                                   }
                                 });
                                 isLoading.value = false;

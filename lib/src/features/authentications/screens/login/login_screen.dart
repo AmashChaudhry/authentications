@@ -4,6 +4,7 @@ import 'package:authentications/src/features/core/screens/home/home_screen.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -200,6 +201,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.deny(RegExp(r' ')),
+                      ],
                       onChanged: (value) {
                         if (value.length > 4 && passwordController.text.trim().length > 7) {
                           isButtonDisabled.value = false;
