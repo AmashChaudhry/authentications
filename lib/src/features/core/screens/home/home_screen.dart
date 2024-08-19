@@ -21,10 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 50,
           width: 200,
           child: ElevatedButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Get.offAll(() => const LoginScreen());
-            },
+            onPressed: () async => await FirebaseAuth.instance.signOut().then((value) => Get.offAll(() => const LoginScreen())),
             style: ElevatedButton.styleFrom(
                 backgroundColor: accentColor,
                 shape: RoundedRectangleBorder(
