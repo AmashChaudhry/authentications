@@ -73,11 +73,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 fontSize: 14,
               ),
             ),
-            const Text(
+            Text(
               'Please verify your account',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: accentColor,
+                color: Colors.black.withOpacity(0.4),
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -97,7 +97,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           child: Text(
                             'Resend again in $countdown sec.',
                             style: TextStyle(
-                              color: Colors.black.withOpacity(0.8),
+                              color: Colors.black.withOpacity(0.5),
                               fontSize: 16,
                             ),
                           ),
@@ -143,6 +143,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 'Back to login',
                 style: TextStyle(
                   color: accentColor,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
