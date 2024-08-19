@@ -1,10 +1,10 @@
 import 'package:authentications/src/constants/colors.dart';
+import 'package:authentications/src/features/authentications/screens/login/login_screen.dart';
 import 'package:get/get.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'src/features/authentications/screens/signup/account_name.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const AccountName(),
+      home: const LoginScreen(),
     );
   }
 }
