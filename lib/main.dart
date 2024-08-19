@@ -1,5 +1,4 @@
 import 'package:authentications/src/constants/colors.dart';
-import 'package:authentications/src/features/authentications/screens/authentication_home/authentication_home_screen.dart';
 import 'package:authentications/src/features/authentications/screens/splash_screen/splash_screen.dart';
 import 'package:get/get.dart';
 import 'firebase_options.dart';
