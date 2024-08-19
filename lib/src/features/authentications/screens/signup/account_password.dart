@@ -1,6 +1,6 @@
 import 'package:authentications/src/constants/colors.dart';
 import 'package:authentications/src/features/authentications/screens/authentication_home/authentication_home_screen.dart';
-import 'package:authentications/src/features/core/screens/home/home_screen.dart';
+import 'package:authentications/src/features/authentications/screens/verify_email/verify_email_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -285,7 +285,7 @@ class _AccountPasswordState extends State<AccountPassword> {
                                 });
                                 FirebaseAuth.instance.idTokenChanges().listen((User? user) {
                                   if (user != null) {
-                                    Get.offAll(() => const HomeScreen());
+                                    Get.offAll(() => const VerifyEmailScreen());
                                   } else {
                                     Get.offAll(() => const AuthenticationHomeScreen());
                                   }

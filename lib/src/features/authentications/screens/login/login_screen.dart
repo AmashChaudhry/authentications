@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:authentications/src/constants/colors.dart';
+import 'package:authentications/src/features/authentications/screens/verify_email/verify_email_screen.dart';
 import 'package:authentications/src/features/core/screens/home/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -373,7 +374,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                                 User? currentUser = FirebaseAuth.instance.currentUser;
                                 if (currentUser != null) {
-                                  Get.offAll(() => const HomeScreen());
+                                  if (currentUser.emailVerified) {
+                                    Get.offAll(() => const HomeScreen());
+                                  } else {
+                                    Get.offAll(() => const VerifyEmailScreen());
+                                  }
                                 }
                                 isLoading.value = false;
                               },
