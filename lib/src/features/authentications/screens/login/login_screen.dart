@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   RxBool isLoading = false.obs;
-  RxBool emailAlreadyExists = false.obs;
   RxBool isButtonDisabled = true.obs;
 
   TextEditingController emailController = TextEditingController();
@@ -172,12 +171,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       onChanged: (value) {
-                        if (value.length > 4) {
+                        if (value.length > 4 && passwordController.text.trim().length > 7) {
                           isButtonDisabled.value = false;
                         } else {
                           isButtonDisabled.value = true;
                         }
-                        emailAlreadyExists.value = false;
                       },
                     ),
                     const SizedBox(height: 10),
@@ -232,41 +230,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       onChanged: (value) {
-                        if (value.length < 8) {
-                          isButtonDisabled.value = true;
-                        } else {
+                        if (value.length > 7 && emailController.text.trim().length > 4) {
                           isButtonDisabled.value = false;
+                        } else {
+                          isButtonDisabled.value = true;
                         }
                       },
-                    ),
-                    const SizedBox(height: 5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Obx(
-                        () => emailAlreadyExists.value
-                            ? const Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.error,
-                                    color: Colors.red,
-                                    size: 15,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(
-                                      'This email already linked with another account. Please try with another email address.',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : const SizedBox(),
-                      ),
                     ),
                   ],
                 ),
@@ -350,7 +319,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       } catch (e) {
                                         errorMessage('Incorrect password, please try again.');
                                       }
-                                      print(userSnapshot.docs.first.data()['Email']);
                                     } else {
                                       errorMessage('We cannot find an account for this username.');
                                     }

@@ -18,7 +18,7 @@ class _AccountUsernameState extends State<AccountUsername> {
   RxBool isLoading = false.obs;
   RxBool isButtonDisabled = true.obs;
   RxString username = ''.obs;
-  RxString statusMessage = 'Username Empty'.obs;
+  RxString usernameStatus = 'Username Empty'.obs;
 
   TextEditingController usernameController = TextEditingController();
 
@@ -39,16 +39,16 @@ class _AccountUsernameState extends State<AccountUsername> {
     await FirebaseFirestore.instance.collection('Users').where('Username', isEqualTo: value).get().then((userSnapshot) async {
       if (value.isEmpty) {
         isButtonDisabled.value = true;
-        statusMessage.value = 'Username Empty';
+        usernameStatus.value = 'Username Empty';
       } else if (value.length < 5) {
         isButtonDisabled.value = true;
-        statusMessage.value = 'Short Length';
+        usernameStatus.value = 'Short Length';
       } else if (userSnapshot.docs.isNotEmpty) {
         isButtonDisabled.value = true;
-        statusMessage.value = 'Already Registered';
+        usernameStatus.value = 'Already Registered';
       } else {
         isButtonDisabled.value = false;
-        statusMessage.value = 'Username Available';
+        usernameStatus.value = 'Username Available';
       }
     });
     isLoading.value = false;
@@ -227,7 +227,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                                   ),
                                 ],
                               )
-                            else if (statusMessage.value == 'Username Empty')
+                            else if (usernameStatus.value == 'Username Empty')
                               Row(
                                 children: [
                                   const SizedBox(width: 5),
@@ -241,7 +241,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                                   ),
                                 ],
                               )
-                            else if (statusMessage.value == 'Short Length')
+                            else if (usernameStatus.value == 'Short Length')
                               Row(
                                 children: [
                                   const Icon(
@@ -260,7 +260,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                                   ),
                                 ],
                               )
-                            else if (statusMessage.value == 'Already Registered')
+                            else if (usernameStatus.value == 'Already Registered')
                               Row(
                                 children: [
                                   const Icon(
@@ -279,7 +279,7 @@ class _AccountUsernameState extends State<AccountUsername> {
                                   ),
                                 ],
                               )
-                            else if (statusMessage.value == 'Username Available')
+                            else if (usernameStatus.value == 'Username Available')
                               Row(
                                 children: [
                                   const Icon(
