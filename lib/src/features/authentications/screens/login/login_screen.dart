@@ -284,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           child: const Center(
                             child: Text(
-                              'Continue',
+                              'Log In',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -366,7 +366,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               child: const Text(
-                                'Log in',
+                                'Log In',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
