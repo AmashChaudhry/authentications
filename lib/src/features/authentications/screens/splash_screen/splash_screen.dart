@@ -1,5 +1,5 @@
 import 'package:authentications/src/constants/colors.dart';
-import 'package:authentications/src/features/authentications/screens/login/login_screen.dart';
+import 'package:authentications/src/features/authentications/screens/authentication_home/authentication_home_screen.dart';
 import 'package:authentications/src/features/authentications/screens/verify_email/verify_email_screen.dart';
 import 'package:authentications/src/features/core/screens/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Get.offAll(() => const VerifyEmailScreen());
       }
     } else {
-      Get.offAll(() => const LoginScreen());
+      Get.offAll(() => const AuthenticationHomeScreen());
     }
   }
 
